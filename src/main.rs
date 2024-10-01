@@ -141,33 +141,36 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
     //         ],
     //     );
 
-    // // Create a UpCounter Instrument.
-    // let updown_counter = meter.i64_up_down_counter("my_updown_counter").init();
+    // Create a UpCounter Instrument.
+    let updown_counter = meter.i64_up_down_counter("my_updown_counter").init();
 
-    // // Record measurements using the UpCounter instrument.
-    // updown_counter.add(
-    //     -10,
-    //     &[
-    //         KeyValue::new("mykey1", "myvalue1"),
-    //         KeyValue::new("mykey2", "myvalue2"),
-    //     ],
-    // );
+    (0..100).all(|s| {
+    // Record measurements using the UpCounter instrument.
+    updown_counter.add(
+        -10*s,
+        &[
+            KeyValue::new("mykey1", "myvalue1"),
+            KeyValue::new("mykey2", "myvalue2"),
+        ],
+    );
+        true
+    });
 
-    // // Create a Observable UpDownCounter instrument and register a callback that reports the measurement.
-    // let _observable_up_down_counter = meter
-    //     .i64_observable_up_down_counter("my_observable_updown_counter")
-    //     .with_description("My observable updown counter example description")
-    //     .with_unit("myunit")
-    //     .with_callback(|observer| {
-    //         observer.observe(
-    //             100,
-    //             &[
-    //                 KeyValue::new("mykey1", "myvalue1"),
-    //                 KeyValue::new("mykey2", "myvalue2"),
-    //             ],
-    //         )
-    //     })
-    //     .init();
+    (0..100).all(|s| {
+    // Create a Observable UpDownCounter instrument and register a callback that reports the measurement.
+    meter
+        .i64_observable_up_down_counter("my_observable_updown_counter")
+        .with_description("My observable updown counter example description")
+        .with_unit("myunit")
+        .init().observe(
+                s,
+                &[
+                    KeyValue::new("mykey1", "myvalue1"),
+                    KeyValue::new("mykey2", "myvalue2"),
+                ],
+            );
+        true
+    });
 
     // // Create a Histogram Instrument.
     // let histogram = meter
