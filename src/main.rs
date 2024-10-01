@@ -44,37 +44,22 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
 
         true
     });
-    // Record measurements using the Counter instrument.
 
-    // Create a ObservableCounter instrument and register a callback that reports the measurement.
-    // let _observable_counter = meter
-    //     .u64_observable_counter("my_observable_counter")
-    //     .with_description("My observable counter example description")
-    //     .with_unit("myunit")
-    //     .with_callback(|observer| {
-    //         observer.observe(
-    //             100,
-    //             &[
-    //                 KeyValue::new("mykey1", "myvalue1"),
-    //                 KeyValue::new("mykey2", "myvalue2"),
-    //             ],
-    //         )
-    //     })
-    //     .init();
+    // Record measurements using the Counter instrument.
+    let observable_counter = meter
+        .u64_observable_counter("my_observable_counter")
+        .with_description("My observable counter example description")
+        .with_unit("myunit")
+        .init();
 
     (0..100).all(|s| {
-        meter
-            .u64_observable_counter("my_observable_counter")
-            .with_description("My observable counter example description")
-            .with_unit("myunit")
-            .init()
-            .observe(
-                s,
-                &[
-                    KeyValue::new("mykey1", "myvalue1"),
-                    KeyValue::new("mykey2", "myvalue2"),
-                ],
-            );
+        observable_counter.observe(
+            s,
+            &[
+                KeyValue::new("mykey1", "myvalue1"),
+                KeyValue::new("mykey2", "myvalue2"),
+            ],
+        );
         true
     });
 
@@ -101,74 +86,59 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
         ],
     );
 
+    let observable_gauge = meter
+        .f64_observable_gauge("my_observable_gauge")
+        .with_description("An observable gauge set to 1.0")
+        .with_unit("myunit")
+        .init();
+
     // Create a ObservableGauge instrument and register a callback that reports the measurement.
-    meter
-        .f64_observable_gauge("my_observable_gauge")
-        .with_description("An observable gauge set to 1.0")
-        .with_unit("myunit")
-        .init()
-        .observe(
-            1.0,
-            &[
-                KeyValue::new("mykey1", "myvalue1"),
-                KeyValue::new("mykey2", "myvalue2"),
-            ],
-        );
-
-    meter
-        .f64_observable_gauge("my_observable_gauge")
-        .with_description("An observable gauge set to 1.0")
-        .with_unit("myunit")
-        .init()
-        .observe(
-            1.3,
-            &[
-                KeyValue::new("mykey1", "myvalue1"),
-                KeyValue::new("mykey2", "myvalue2"),
-            ],
-        );
-
-    // meter
-    //     .u64_observable_counter("my_observable_counter")
-    //     .with_description("My observable counter example description")
-    //     .with_unit("myunit")
-    //     .init()
-    //     .observe(
-    //         230,
-    //         &[
-    //             KeyValue::new("mykey1", "myvalue1"),
-    //             KeyValue::new("mykey2", "myvalue2"),
-    //         ],
-    //     );
-
-    // Create a UpCounter Instrument.
-    let updown_counter = meter.i64_up_down_counter("my_updown_counter").init();
-
-    (0..100).all(|s| {
-    // Record measurements using the UpCounter instrument.
-    updown_counter.add(
-        -10*s,
+    observable_gauge.observe(
+        1.0,
         &[
             KeyValue::new("mykey1", "myvalue1"),
             KeyValue::new("mykey2", "myvalue2"),
         ],
     );
+
+    observable_gauge.observe(
+        1.3,
+        &[
+            KeyValue::new("mykey1", "myvalue1"),
+            KeyValue::new("mykey2", "myvalue2"),
+        ],
+    );
+
+    // Create a UpCounter Instrument.
+    let updown_counter = meter.i64_up_down_counter("my_updown_counter").init();
+
+    (0..100).all(|s| {
+        // Record measurements using the UpCounter instrument.
+        updown_counter.add(
+            -10 * s,
+            &[
+                KeyValue::new("mykey1", "myvalue1"),
+                KeyValue::new("mykey2", "myvalue2"),
+            ],
+        );
         true
     });
 
-    (0..100).all(|s| {
-    // Create a Observable UpDownCounter instrument and register a callback that reports the measurement.
-    meter
+    let observable_updown_counter = meter
         .i64_observable_up_down_counter("my_observable_updown_counter")
         .with_description("My observable updown counter example description")
         .with_unit("myunit")
-        .init().observe(
-                s,
-                &[
-                    KeyValue::new("mykey1", "myvalue1"),
-                    KeyValue::new("mykey2", "myvalue2"),
-                ],
-            );
+        .init();
+
+    (0..100).all(|s| {
+        // Create a Observable UpDownCounter instrument and register a callback that reports the measurement.
+        observable_updown_counter.observe(
+            s,
+            &[
+                KeyValue::new("mykey1", "myvalue1"),
+                KeyValue::new("mykey2", "myvalue2"),
+            ],
+        );
         true
     });
 
