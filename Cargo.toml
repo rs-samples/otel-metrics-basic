@@ -1,0 +1,17 @@
+[package]
+name = "metrics-basic"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+publish = false
+
+[dependencies]
+opentelemetry = { version = "*", features = ["metrics", "otel_unstable"] }
+opentelemetry_sdk = { version = "*", features = ["metrics", "rt-tokio"] }
+opentelemetry-stdout = { version = "*", features = ["metrics"]}
+tokio = { version = "*", features = ["full"] }
+serde_json = { version = "*" }
+
+[features]
+default = ["otel_unstable"]
+otel_unstable = ["opentelemetry/otel_unstable"]
